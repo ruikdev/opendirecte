@@ -180,7 +180,7 @@ function closeComposeModal() {
 // Charger la liste des utilisateurs
 async function loadUsers() {
     try {
-        const response = await fetch('/api/v1/users', {
+        const response = await fetch('/api/v1/users/list', {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

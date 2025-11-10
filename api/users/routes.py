@@ -8,6 +8,17 @@ from core.permissions import get_current_user, admin_required, is_owner_or_admin
 users_bp = Blueprint('users', __name__, url_prefix='/api/v1/users')
 
 
+@users_bp.route('/list', methods=['GET'])
+@jwt_required()
+def list_users_for_messaging():
+    """Lister tous les utilisateurs pour la messagerie (accessible à tous)"""
+    users = User.query.all()
+    
+    return jsonify({
+        'users': [{'id': u.id, 'username': u.username, 'email': u.email, 'role': u.role} for u in users]
+    }), 200
+
+
 @users_bp.route('', methods=['GET'])
 @jwt_required()
 @admin_required
