@@ -20,7 +20,7 @@ def list_groups():
         groups = current_user.groups
     
     return jsonify({
-        'groups': [g.to_dict(include_members=False) for g in groups]
+        'groups': [g.to_dict(include_members=True) for g in groups]
     }), 200
 
 

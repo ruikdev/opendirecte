@@ -191,7 +191,19 @@ class CalendarEvent(db.Model):
     end_time = db.Column(db.DateTime, nullable=False)
     location = db.Column(db.String(200), nullable=True)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    
+    # Champs de récurrence
+    is_recurring = db.Column(db.Boolean, default=False)
+    recurrence_type = db.Column(db.String(20), nullable=True)  # weekly, biweekly, monthly
+    recurrence_end = db.Column(db.DateTime, nullable=True)
+    parent_event_id = db.Column(db.Integer, db.ForeignKey('calendar_events.id'), nullable=True)
+    
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relations
+    creator = db.relationship('User', foreign_keys=[created_by], backref='created_events')
+    parent_event = db.relationship('CalendarEvent', remote_side=[id], backref='recurring_instances')
     
     def to_dict(self):
         """Sérialisation en dictionnaire"""
@@ -204,6 +216,12 @@ class CalendarEvent(db.Model):
             'location': self.location,
             'group_id': self.group_id,
             'group_name': self.group.name if self.group else None,
+            'created_by': self.created_by,
+            'creator_name': self.creator.username if self.creator else None,
+            'is_recurring': self.is_recurring,
+            'recurrence_type': self.recurrence_type,
+            'recurrence_end': self.recurrence_end.isoformat() if self.recurrence_end else None,
+            'parent_event_id': self.parent_event_id,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 
