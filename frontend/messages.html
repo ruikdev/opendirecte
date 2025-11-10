@@ -54,16 +54,27 @@
                     </div>
                 </div>
                 
-                <!-- Tab Buttons -->
-                <div class="flex space-x-2 bg-white rounded-lg p-1 shadow-md border border-gray-200">
-                    <button id="inboxTab" onclick="switchTab('inbox')" 
-                            class="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium transition-all duration-200 shadow-md">
-                        📥 Reçus
+                <div class="flex items-center space-x-3">
+                    <!-- Bouton Nouveau Message -->
+                    <button onclick="openComposeModal()" 
+                            class="px-6 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        <span>Nouveau Message</span>
                     </button>
-                    <button id="sentTab" onclick="switchTab('sent')" 
-                            class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200">
-                        📤 Envoyés
-                    </button>
+                    
+                    <!-- Tab Buttons -->
+                    <div class="flex space-x-2 bg-white rounded-lg p-1 shadow-md border border-gray-200">
+                        <button id="inboxTab" onclick="switchTab('inbox')" 
+                                class="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-medium transition-all duration-200 shadow-md">
+                            📥 Reçus
+                        </button>
+                        <button id="sentTab" onclick="switchTab('sent')" 
+                                class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200">
+                            📤 Envoyés
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -76,6 +87,96 @@
                     <p class="text-gray-500 ml-3">Chargement des messages...</p>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal de lecture de message -->
+    <div id="messageModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-4">
+                <h2 id="modalSubject" class="text-2xl font-bold text-gray-800"></h2>
+                <button onclick="closeMessageModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="mb-4 space-y-2">
+                <div class="flex items-center text-sm text-gray-600">
+                    <span class="font-semibold mr-2">De:</span>
+                    <span id="modalSender"></span>
+                </div>
+                <div class="flex items-center text-sm text-gray-600">
+                    <span class="font-semibold mr-2">À:</span>
+                    <span id="modalRecipients"></span>
+                </div>
+                <div class="flex items-center text-sm text-gray-600">
+                    <span class="font-semibold mr-2">Date:</span>
+                    <span id="modalDate"></span>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div id="modalContent" class="text-gray-700 whitespace-pre-wrap"></div>
+            
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeMessageModal()" 
+                        class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-all duration-200">
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de composition de message -->
+    <div id="composeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-2xl w-full mx-4">
+            <div class="flex justify-between items-start mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Nouveau Message</h2>
+                <button onclick="closeComposeModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <form id="composeForm" onsubmit="sendMessage(event)" class="space-y-4">
+                <div>
+                    <label for="recipientSelect" class="block text-sm font-semibold text-gray-700 mb-2">Destinataires</label>
+                    <select id="recipientSelect" multiple required
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            style="min-height: 100px;">
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Maintenez Ctrl (ou Cmd) pour sélectionner plusieurs destinataires</p>
+                </div>
+                
+                <div>
+                    <label for="messageSubject" class="block text-sm font-semibold text-gray-700 mb-2">Objet</label>
+                    <input type="text" id="messageSubject" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                           placeholder="Objet du message">
+                </div>
+                
+                <div>
+                    <label for="messageContent" class="block text-sm font-semibold text-gray-700 mb-2">Message</label>
+                    <textarea id="messageContent" required rows="8"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              placeholder="Contenu du message"></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button type="button" onclick="closeComposeModal()" 
+                            class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-all duration-200">
+                        Annuler
+                    </button>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-lg">
+                        Envoyer
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
