@@ -95,10 +95,6 @@ Un compte administrateur est créé automatiquement au premier lancement :
 
 ⚠️ **Important** : Changez ce mot de passe en production !
 
-## 🛠️ Gestion des utilisateurs et classes (CLI)
-
-Un outil CLI `manage.py` est fourni pour gérer facilement les utilisateurs et classes sans passer par l'API :
-
 ## 📚 API Documentation
 
 ### Endpoints disponibles
